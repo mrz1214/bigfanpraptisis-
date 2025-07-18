@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>I am your big fan of you Prapti sis ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      margin-top: 20px;
+      border: 4px solid #00ffcc;
+      object-fit: cover;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin: 15px 0 5px;
+      color: #00ffcc;
+    }
+
+    p {
+      font-size: 1em;
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      margin: 10px 0;
+      font-size: 1em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      width: 260px;
+    }
+
+    .yes {
+      background-color: #00ff99;
+      color: black;
+    }
+
+    .no {
+      background-color: #ff4444;
+      color: white;
+      position: relative;
+    }
+
+    #popup {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      background-color: #1f1f1f;
+      border: 2px solid #00ffcc;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      z-index: 999;
+      transition: transform 0.5s ease;
+    }
+
+    #popup.show {
+      transform: translateX(-50%) scale(1);
+    }
+
+    #popup h2 {
+      color: #00ffcc;
+      font-size: 2em;
+      animation: pop 0.5s ease-in-out;
+    }
+
+    #popup p {
+      margin-top: 10px;
+      font-size: 1.3em;
+      color: #ff66cc;
+    }
+
+    .emoji {
+      font-size: 2em;
+      animation: bounce 1s infinite;
+    }
+
+    canvas#confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      z-index: 998;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background music -->
+  <audio id="bgmusic" preload="auto" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Blast sound -->
+  <audio id="blastsound" preload="auto">
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_dcf1b80d3f.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Prapti Ghimire’s photo -->
+  <img src="https://i.imgur.com/hFmusmU.jpeg" alt="Prapti Ghimire">
+
+  <h1>I am your big fan of you Prapti sis ❤️</h1>
+  <p>choose one</p>
+
+  <!-- Buttons -->
+  <button class="btn yes" onclick="showPopup()">You are my fan I accept ❤️</button>
+  <button class="btn no" onclick="moveButton(this)">You are not my true fan I didn't accept 💔</button>
+
+  <!-- Thank you popup -->
+  <div id="popup">
+    <div class="emoji">🎉</div>
+    <h2>Thank you sis 💖</h2>
+    <p>Your big fan <strong>B&G_Official</strong></p>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    // Background music
+    const music = document.getElementById("bgmusic");
+    const blast = document.getElementById("blastsound");
+
+    // Auto-play fix for mobile: first tap anywhere
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.addEventListener('click', () => {
+        if (music.paused) {
+          music.volume = 0.5;
+          music.play().catch(() => {});
+        }
+      }, { once: true });
+    });
+
+    // Move NO button randomly
+    function moveButton(button) {
+      const maxX = window.innerWidth - button.offsetWidth;
+      const maxY = window.innerHeight - button.offsetHeight;
+      const randX = Math.floor(Math.random() * maxX);
+      const randY = Math.floor(Math.random() * maxY);
+      button.style.position = 'absolute';
+      button.style.left = randX + "px";
+      button.style.top = randY + "px";
+    }
+
+    // Show popup and confetti
+    function showPopup() {
+      document.getElementById("popup").classList.add("show");
+      blast.play();
+      startConfetti();
+    }
+
+    // Confetti logic
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let confetti = [];
+
+    function startConfetti() {
+      confetti = [];
+      for (let i = 0; i < 150; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 6 + 4,
+          d: Math.random() * 10 + 2,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+          tilt: Math.floor(Math.random() * 10) - 5
+        });
+      }
+      drawConfetti();
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach((c, i) => {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2, false);
+        ctx.fillStyle = c.color;
+        ctx.fill();
+        c.y += c.d;
+        c.x += Math.sin(c.tilt) * 0.5;
+        if (c.y > canvas.height) confetti[i].y = -10;
+      });
+      requestAnimationFrame(drawConfetti);
+    }
+  </script>
+</body>
+  </html>
